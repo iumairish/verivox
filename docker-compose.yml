@@ -1,0 +1,39 @@
+networks:
+    verivox:
+        name: verivox
+
+services:
+    nginx_server:
+        image: nginx:stable-alpine
+        ports:
+            - "80:80"
+        volumes:
+            - .:/var/www/html:delegated
+        depends_on:
+            - php_fpm
+            - mysql_db
+        networks:
+            - verivox
+
+    php_fpm:
+        image: php:8.2-fpm
+        ports:
+            - "9000:9000"
+        volumes:
+            - .:/var/www/html:delegated
+        networks:
+            - verivox
+
+    mysql_db:
+        image: mariadb:10.6
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: verivox
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+        networks:
+            - verivox
