@@ -23,7 +23,6 @@ class CompareRequest extends FormRequest
     {
         return [
             'consumption'   =>  'required|integer|min:1',
-            'sortBy'        =>  'string|in:asc,desc'
         ];
     }
 }
