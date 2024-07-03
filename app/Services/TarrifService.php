@@ -30,8 +30,11 @@ class TarrifService
         $data = $this->tarrifRepository->all();
         $result = collect($data)->map(function($item) use($consumption) {
             $tarrif = $this->getTarrif($item['type'], $item);
-            $item['annualCost'] = $tarrif->calculateCost($consumption);
-            return $item;
+            $annualCost = $tarrif->calculateCost($consumption);
+            return [
+                'name'          =>  $item['name'],
+                'annualCost'    =>  $annualCost
+            ];
         });
 
         return $result;
