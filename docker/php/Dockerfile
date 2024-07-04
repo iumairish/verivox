@@ -1,5 +1,7 @@
 FROM php:8.2-fpm
 
+COPY . /var/www/html
+
 WORKDIR /var/www/html
 
 RUN apt-get update && apt-get install -y \
@@ -25,10 +27,15 @@ RUN docker-php-ext-install gd
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN mv .env.example .env
+
 RUN chown -R www-data:www-data \
         /var/www/html/
 
 RUN chmod 775 /
+
+RUN composer update
+RUN php artisan optimize
 
 EXPOSE 9000
 CMD ["php-fpm"]

@@ -1,8 +1,23 @@
+version: "3"
+
 networks:
     verivox:
         name: verivox
 
 services:
+
+    php_fpm:
+        build:
+            dockerfile: ./docker/php/Dockerfile
+        ports:
+            - "9000:9000"
+        tty: true
+        working_dir: /var/www/html
+        # volumes:
+        #     - .:/var/www/html:delegated
+        networks:
+            - verivox
+
     nginx_server:
         image: nginx:stable-alpine
         ports:
@@ -13,19 +28,5 @@ services:
             - ./docker/nginx/conf.d:/etc/nginx/conf.d
         depends_on:
             - php_fpm
-        networks:
-            - verivox
-
-    php_fpm:
-        image: php_fpm
-        build:
-            context: .
-            dockerfile: ./docker/php/Dockerfile
-        ports:
-            - "9000:9000"
-        volumes:
-            - .:/var/www/html:delegated
-        command: >
-            sh -c "composer update && cp .env.example .env && php artisan optimize"
         networks:
             - verivox
