@@ -17,10 +17,15 @@ services:
             - verivox
 
     php_fpm:
-        image: php:8.2-fpm
+        image: php_fpm
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
         ports:
             - "9000:9000"
         volumes:
             - .:/var/www/html:delegated
+        command: >
+            sh -c "composer update && cp .env.example .env && php artisan optimize"
         networks:
             - verivox
