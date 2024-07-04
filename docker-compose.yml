@@ -7,11 +7,12 @@ services:
         image: nginx:stable-alpine
         ports:
             - "80:80"
+        tty: true
         volumes:
             - .:/var/www/html:delegated
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
         depends_on:
             - php_fpm
-            - mysql_db
         networks:
             - verivox
 
@@ -21,19 +22,5 @@ services:
             - "9000:9000"
         volumes:
             - .:/var/www/html:delegated
-        networks:
-            - verivox
-
-    mysql_db:
-        image: mariadb:10.6
-        restart: unless-stopped
-        tty: true
-        ports:
-            - "3306:3306"
-        environment:
-            MYSQL_DATABASE: verivox
-            MYSQL_USER: root
-            MYSQL_PASSWORD: root
-            MYSQL_ROOT_PASSWORD: root
         networks:
             - verivox
